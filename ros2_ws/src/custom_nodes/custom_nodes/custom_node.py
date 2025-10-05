@@ -45,6 +45,7 @@ class CustomNode(Node):
             status_msg = String()
             status_msg.data = STATUS_STOPPED
             self.status_pub.publish(status_msg)
+            self.talker_active = False
 
 def main(args=None):
     rclpy.init(args=args)
