@@ -1,0 +1,38 @@
+# Dockerfile for CustomNode development container
+# Supports volume-mounted workspace and builds on startup
+
+FROM ros:humble-ros-base
+
+# Install colcon and build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3-colcon-common-extensions \
+        python3-pip \
+        python3-setuptools \
+        python3-rosdep \
+        build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# Create workspace directory for volume mount
+RUN mkdir -p /ros2_ws/src
+
+# Add non-root user for development
+ARG USERNAME=dev
+ARG USER_UID=1000
+ARG USER_GID=1000
+RUN groupadd -g ${USER_GID} ${USERNAME} \
+    && useradd -m -s /bin/bash -u ${USER_UID} -g ${USER_GID} ${USERNAME} \
+    && mkdir -p /ros2_ws && chown -R ${USERNAME}:${USERNAME} /ros2_ws
+USER ${USERNAME}
+
+# Add custom entrypoint script
+COPY custom_entrypoint.sh /custom_entrypoint.sh
+RUN chmod +x /custom_entrypoint.sh
+
+ENV ROS_DOMAIN_ID=0
+
+WORKDIR /ros2_ws
+
+ENTRYPOINT ["/custom_entrypoint.sh"]
+CMD ["ros2", "run", "custom_nodes", "custom_node"]
