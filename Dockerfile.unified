@@ -1,0 +1,45 @@
+# Dockerfile.unified: Reference implementation for ROS2 Humble demo nodes (Python)
+#
+# Purpose:
+#   - Unified Dockerfile for running both talker and listener demo nodes
+#   - Demonstrates Docker best practices for multi-node ROS2 projects
+#   - Reduces maintenance and disk usage compared to separate Dockerfiles
+#
+# Usage Examples:
+#   Build image:
+#     docker build -f Dockerfile.unified -t ros2-demo:unified .
+#
+#   Run talker node:
+#     docker run --rm --network host ros2-demo:unified
+#
+#   Run listener node (override CMD):
+#     docker run --rm --network host ros2-demo:unified listener
+#
+#   (Override CMD at runtime to select node; only the node name is needed)
+#
+#   Note: --network host is required for ROS2 DDS communication between containers.
+#
+#   Advantages:
+#     - Single image to maintain
+#     - Smaller total disk usage
+#   Disadvantages:
+#     - Less explicit separation
+#     - Requires runtime arguments to select node
+#
+# Base image: Official ROS2 Humble base
+FROM ros:humble-ros-base
+
+# Install pinned demo_nodes_py package and clean up apt cache
+RUN apt-get update && \
+    # Pin ros-humble-demo-nodes-py to a known-good version for reproducibility
+    apt-get install -y --no-install-recommends ros-humble-demo-nodes-py=0.15.0-1jammy.20230919.183936 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set ROS_DOMAIN_ID for DDS isolation (can be overridden at runtime)
+ENV ROS_DOMAIN_ID=0
+
+# Preserve ROS environment sourcing and simplify node selection
+ENTRYPOINT ["/ros_entrypoint.sh", "ros2", "run", "demo_nodes_py"]
+
+# Default CMD runs the talker node; override at runtime for listener
+CMD ["talker"]

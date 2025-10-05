@@ -1,0 +1,17 @@
+# Dockerfile for ROS2 Humble demo listener node (Python)
+#
+# Base image: Official ROS2 Humble base
+FROM ros:humble-ros-base
+
+# Install demo_nodes_py package and clean up apt cache
+RUN apt-get update && \
+    # Pin ros-humble-demo-nodes-py to a known-good version for reproducibility
+    apt-get install -y --no-install-recommends ros-humble-demo-nodes-py=0.15.0-1jammy.20230919.183936 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set ROS_DOMAIN_ID for DDS isolation
+ENV ROS_DOMAIN_ID=0
+
+# Preserve ROS environment sourcing
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["ros2", "run", "demo_nodes_py", "listener"]

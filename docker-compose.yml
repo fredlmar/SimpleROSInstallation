@@ -1,0 +1,85 @@
+# docker-compose.yml: Orchestrate ROS2 Humble talker and listener demo nodes
+#
+# Purpose:
+#   - Launch both talker and listener containers for ROS2 demo
+#   - Ensure reliable DDS communication using host or bridge networking
+#
+# Usage:
+#   Build and start services (choose profile for your platform):
+#     Linux:
+#       docker compose --profile host up --build
+#     Windows/Mac (Docker Desktop):
+#       docker compose --profile bridge up --build
+#
+#   Stop services:
+#     Use the same profile flag:
+#       docker compose --profile host down
+#       docker compose --profile bridge down
+#
+#   View logs:
+#     docker compose logs -f
+#
+# Notes:
+#   - Services 'talker' and 'listener' use the 'host' profile (Linux only)
+#   - Services 'talker-bridge' and 'listener-bridge' use the 'bridge' profile (Windows/Mac)
+#   - Both containers will run simultaneously and communicate via ROS2 topics
+#   - Host networking is the simplest approach for local development and DDS discovery (Linux only)
+#   - Bridge networking is required for Docker Desktop (Windows/Mac); sets ROS_LOCALHOST_ONLY=0 for DDS
+#   - ROS_DOMAIN_ID provides DDS isolation (set to 0 for all)
+#   - Restart policy 'unless-stopped' ensures resilience
+#
+# Alternative: For production or multi-host, consider bridge network with custom DDS config
+#
+
+services:
+  talker:
+    build:
+      context: .
+      dockerfile: Dockerfile.talker
+    container_name: ros2-talker
+    profiles: [host]
+    network_mode: host  # Host networking for ROS2 DDS communication (Linux only)
+    environment:
+      - ROS_DOMAIN_ID=0
+    restart: unless-stopped
+
+  listener:
+    build:
+      context: .
+      dockerfile: Dockerfile.listener
+    container_name: ros2-listener
+    profiles: [host]
+    network_mode: host  # Host networking for ROS2 DDS communication (Linux only)
+    environment:
+      - ROS_DOMAIN_ID=0
+    restart: unless-stopped
+
+  talker-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.talker
+    container_name: ros2-talker-bridge
+    profiles: [bridge]
+    networks:
+      - ros2-net
+    environment:
+      - ROS_DOMAIN_ID=0
+      - ROS_LOCALHOST_ONLY=0
+    restart: unless-stopped
+
+  listener-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.listener
+    container_name: ros2-listener-bridge
+    profiles: [bridge]
+    networks:
+      - ros2-net
+    environment:
+      - ROS_DOMAIN_ID=0
+      - ROS_LOCALHOST_ONLY=0
+    restart: unless-stopped
+
+networks:
+  ros2-net:
+    driver: bridge
