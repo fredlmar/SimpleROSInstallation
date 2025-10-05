@@ -55,6 +55,19 @@ services:
       - ROS_DOMAIN_ID=0
     restart: unless-stopped
 
+  custom-node:
+    build:
+      context: .
+      dockerfile: Dockerfile.custom
+    container_name: ros2-custom-node
+    profiles: [host]
+    network_mode: host  # Host networking for ROS2 DDS communication (Linux only)
+    volumes:
+      - ./ros2_ws:/ros2_ws
+    environment:
+      - ROS_DOMAIN_ID=0
+    restart: unless-stopped
+
   talker-bridge:
     build:
       context: .
@@ -74,6 +87,20 @@ services:
     container_name: ros2-listener-bridge
     networks:
       - ros2-net
+    environment:
+      - ROS_DOMAIN_ID=0
+      - ROS_LOCALHOST_ONLY=0
+    restart: unless-stopped
+
+  custom-node-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.custom
+    container_name: ros2-custom-node-bridge
+    networks:
+      - ros2-net
+    volumes:
+      - ./ros2_ws:/ros2_ws
     environment:
       - ROS_DOMAIN_ID=0
       - ROS_LOCALHOST_ONLY=0
