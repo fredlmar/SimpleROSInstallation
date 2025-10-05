@@ -2,6 +2,8 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
+NANOSECONDS_TO_SECONDS = 1e9
+
 class CustomNode(Node):
     def __init__(self):
         super().__init__('custom_node')
@@ -31,8 +33,8 @@ class CustomNode(Node):
             self.status_pub.publish(status_msg)
 
     def check_timeout(self):
-        elapsed = (self.get_clock().now() - self.last_message_time).nanoseconds / 1e9
-        if elapsed > self.timeout_duration and self.talker_active:
+        elapsed = (self.get_clock().now() - self.last_message_time).nanoseconds / NANOSECONDS_TO_SECONDS
+            self.get_logger().warning(f'Talker stopped - no messages for {elapsed:.2f} seconds')
             self.talker_active = False
             self.get_logger().warn(f'Talker stopped - no messages for {elapsed:.2f} seconds')
             status_msg = String()
