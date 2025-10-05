@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+.eggs/
+.Python
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+virtualenv/
+
+# Testing/Type checking
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+
+# Build/Dist
+build/
+dist/
+
+# Docker
+.env
+docker-compose.override.yml
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+.DS_Store
+Thumbs.db
+
+# Logs/Temp
+*.log
+*.tmp
+logs/
+
+# ROS2 workspace (if added later)
+install/
+build/
+log/

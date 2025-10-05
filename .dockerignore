@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+
+# Venvs
+.venv/
+venv/
+ENV/
+env/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# VCS
+.git/
+.gitignore
+.gitattributes
+
+# Build/Dist
+build/
+dist/
+.coverage
+.tox/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.cache/
+
+# Logs/Temp
+*.log
+*.tmp
+logs/
+
+# ROS2 (future workspace)
+install/
+build/
+log/
