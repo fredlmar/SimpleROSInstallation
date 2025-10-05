@@ -10,6 +10,7 @@
 #       docker compose --profile host up --build
 #     Windows/Mac (Docker Desktop):
 #       docker compose --profile bridge up --build
+#       docker compose up --build (default profile bridge)
 #
 #   Stop services:
 #     Use the same profile flag:
@@ -59,7 +60,6 @@ services:
       context: .
       dockerfile: Dockerfile.talker
     container_name: ros2-talker-bridge
-    profiles: [bridge]
     networks:
       - ros2-net
     environment:
@@ -72,7 +72,6 @@ services:
       context: .
       dockerfile: Dockerfile.listener
     container_name: ros2-listener-bridge
-    profiles: [bridge]
     networks:
       - ros2-net
     environment:
