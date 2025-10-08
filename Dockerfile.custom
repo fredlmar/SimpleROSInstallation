@@ -18,13 +18,13 @@ RUN apt-get update && \
 RUN mkdir -p /ros2_ws/src
 
 # Add non-root user for development
-ARG USERNAME=dev
-ARG USER_UID=1000
-ARG USER_GID=1000
-RUN groupadd -g ${USER_GID} ${USERNAME} \
-    && useradd -m -s /bin/bash -u ${USER_UID} -g ${USER_GID} ${USERNAME} \
-    && mkdir -p /ros2_ws && chown -R ${USERNAME}:${USERNAME} /ros2_ws
-USER ${USERNAME}
+#ARG USERNAME=dev
+#ARG USER_UID=1000
+#ARG USER_GID=1000
+#RUN groupadd -g ${USER_GID} ${USERNAME} \
+#    && useradd -m -s /bin/bash -u ${USER_UID} -g ${USER_GID} ${USERNAME} \
+#    && mkdir -p /ros2_ws && chown -R ${USERNAME}:${USERNAME} /ros2_ws
+#USER ${USERNAME}
 
 # Add custom entrypoint script
 COPY custom_entrypoint.sh /custom_entrypoint.sh
