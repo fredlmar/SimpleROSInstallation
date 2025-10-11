@@ -53,6 +53,12 @@ A containerized ROS2 Humble demo using Python talker/listener nodes. Supports se
     - [Remove Images](#remove-images)
     - [Remove Networks](#remove-networks)
     - [Full Cleanup (including volumes)](#full-cleanup-including-volumes)
+  - [Development Tools \& Visualization](#development-tools--visualization)
+    - [Devtools Container (RViz, RQt, Colcon, etc.)](#devtools-container-rviz-rqt-colcon-etc)
+    - [Foxglove Bridge Container](#foxglove-bridge-container)
+  - [Example: Start All Services (Windows)](#example-start-all-services-windows)
+  - [Example: Use Foxglove Studio](#example-use-foxglove-studio)
+  - [Notes](#notes)
   - [Additional Resources](#additional-resources)
   - [License](#license)
   - [Contributing](#contributing)
@@ -550,6 +556,68 @@ docker network rm ros2-net
 docker compose down -v
 docker system prune -a
 ```
+
+---
+
+## Development Tools & Visualization
+
+### Devtools Container (RViz, RQt, Colcon, etc.)
+
+A dedicated devtools container is available for running RViz, RQt, and other ROS2 development tools. It mounts the workspace and supports X11 forwarding for GUI apps.
+
+**Windows X11 Setup:**
+- Install and run VcXsrv X Server on Windows.
+- Start VcXsrv with "Disable access control" enabled.
+- In `docker-compose.yml`, the devtools container sets:
+  - `DISPLAY=host.docker.internal:0.0`
+  - `QT_X11_NO_MITSHM=1`
+  - Mounts `/tmp/.X11-unix` for X11 socket sharing.
+- Start with:
+  ```powershell
+  docker compose --profile devtools up --build
+  docker compose exec ros2-devtools bash
+  rviz2
+  ```
+
+### Foxglove Bridge Container
+
+A container for Foxglove Bridge is included for web-based visualization and integration with Foxglove Studio.
+
+- Built from `Dockerfile.foxglove` (installs `ros-humble-foxglove-bridge`)
+- Starts with:
+  ```powershell
+  docker compose --profile devtools up --build
+  ```
+- Foxglove Bridge runs on port 8765. Connect Foxglove Studio to `ws://localhost:8765`.
+- The container sources ROS2 before launching:
+  ```bash
+  ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+  ```
+
+---
+
+## Example: Start All Services (Windows)
+
+```powershell
+# Start bridge and devtools profiles
+# (includes talker-bridge, listener-bridge, custom-node-bridge, devtools, foxglove-bridge)
+docker compose --profile bridge --profile devtools up --build
+```
+
+---
+
+## Example: Use Foxglove Studio
+
+1. Start containers as above.
+2. Open Foxglove Studio and connect to `ws://localhost:8765`.
+3. Visualize ROS2 topics and data in the browser.
+
+---
+
+## Notes
+- For GUI tools (RViz, RQt), ensure X11 forwarding is set up and VcXsrv is running.
+- For Foxglove Bridge, ensure port 8765 is open and not blocked by firewall.
+- All containers source ROS2 environments as needed for correct operation.
 
 ---
 
