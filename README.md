@@ -566,6 +566,7 @@ docker system prune -a
 A dedicated devtools container is available for running RViz, RQt, and other ROS2 development tools. It mounts the workspace and supports X11 forwarding for GUI apps.
 
 **Windows X11 Setup:**
+
 - Install and run VcXsrv X Server on Windows.
 - Start VcXsrv with "Disable access control" enabled.
 - In `docker-compose.yml`, the devtools container sets:
@@ -573,6 +574,7 @@ A dedicated devtools container is available for running RViz, RQt, and other ROS
   - `QT_X11_NO_MITSHM=1`
   - Mounts `/tmp/.X11-unix` for X11 socket sharing.
 - Start with:
+
   ```powershell
   docker compose --profile devtools up --build
   docker compose exec ros2-devtools bash
@@ -585,11 +587,14 @@ A container for Foxglove Bridge is included for web-based visualization and inte
 
 - Built from `Dockerfile.foxglove` (installs `ros-humble-foxglove-bridge`)
 - Starts with:
+
   ```powershell
   docker compose --profile devtools up --build
   ```
+
 - Foxglove Bridge runs on port 8765. Connect Foxglove Studio to `ws://localhost:8765`.
 - The container sources ROS2 before launching:
+
   ```bash
   ros2 launch foxglove_bridge foxglove_bridge_launch.xml
   ```
@@ -615,6 +620,7 @@ docker compose --profile bridge --profile devtools up --build
 ---
 
 ## Notes
+
 - For GUI tools (RViz, RQt), ensure X11 forwarding is set up and VcXsrv is running.
 - For Foxglove Bridge, ensure port 8765 is open and not blocked by firewall.
 - All containers source ROS2 environments as needed for correct operation.
