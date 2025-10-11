@@ -109,6 +109,28 @@ services:
       - ROS_LOCALHOST_ONLY=0
     restart: unless-stopped
 
+
+  devtools:
+    build:
+      context: .
+      dockerfile: Dockerfile.devtools
+    container_name: ros2-devtools
+    profiles: [devtools]  # Enable with --profile devtools
+    networks:
+      - ros2-net
+    environment:
+      - ROS_DOMAIN_ID=0
+      - ROS_LOCALHOST_ONLY=0
+      - DISPLAY=host.docker.internal:0.0
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - ./ros2_ws:/ros2_ws
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    tty: true
+    stdin_open: true
+    command: ["bash"]
+    restart: unless-stopped
+
 networks:
   ros2-net:
     driver: bridge
