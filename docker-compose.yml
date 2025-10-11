@@ -131,6 +131,24 @@ services:
     command: ["bash"]
     restart: unless-stopped
 
+
+  foxglove-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.foxglove
+    container_name: ros2-foxglove-bridge
+    profiles: [devtools]  # Enable with --profile devtools or add your own profile
+    networks:
+      - ros2-net
+    environment:
+      - ROS_DOMAIN_ID=0
+      - ROS_LOCALHOST_ONLY=0
+    ports:
+      - "8765:8765"  # Foxglove WebSocket default port
+    volumes:
+      - ./ros2_ws:/ros2_ws
+    restart: unless-stopped
+
 networks:
   ros2-net:
     driver: bridge

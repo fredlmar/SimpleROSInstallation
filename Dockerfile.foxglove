@@ -1,0 +1,16 @@
+FROM ros:humble-ros-base
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        python3-pip \
+        build-essential \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Foxglove Bridge
+RUN apt-get update && apt-get install -y ros-humble-foxglove-bridge
+
+WORKDIR /ros2_ws
+
+ENTRYPOINT ["/bin/bash", "-c", "source /opt/ros/humble/setup.bash && ros2 launch foxglove_bridge foxglove_bridge_launch.xml"]
